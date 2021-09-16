@@ -116,3 +116,12 @@ CREATE TABLE IF NOT EXISTS pareja
     FOREIGN KEY(id)
 		REFERENCES tutores(id)
 );
+
+CREATE TABLE IF NOT EXISTS materias
+(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    descripcion VARCHAR(50) NOT NULL,
+    regimen ENUM('Bimestral', 'Trimestral', 'Cuatrimestral', 'Anual'),
+    plan_estudio VARCHAR(75),
+    PRIMARY KEY(id)
+);
