@@ -1,8 +1,6 @@
 CREATE DATABASE IF NOT EXISTS db_web_alumnos;   
 USE db_web_alumnos;
 
-DROP TABLE IF EXISTS admin;
-
 CREATE TABLE IF NOT EXISTS datos_personales
 (
 	documento			INT(11) UNSIGNED NOT NULL,
@@ -33,7 +31,7 @@ CREATE TABLE IF NOT EXISTS admin
 
 CREATE TABLE IF NOT EXISTS aulas
 (
-	id 				INT(2) UNSIGNED NOT NULL,
+	id 				INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
     descripcion 	VARCHAR(50),
     capacidad 		INT(2),
     PRIMARY KEY(id)
@@ -41,7 +39,7 @@ CREATE TABLE IF NOT EXISTS aulas
 
 CREATE TABLE IF NOT EXISTS cursos
 (
-	id 			INT(2) UNSIGNED NOT NULL,
+	id 			INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
 	aula_id 	INT(2) UNSIGNED NOT NULL,
     nivel 		CHAR(1),
     turno 		ENUM('Mañana', 'Tarde', 'Noche'),
