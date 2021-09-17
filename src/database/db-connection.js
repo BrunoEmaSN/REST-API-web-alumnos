@@ -8,7 +8,7 @@ class DB {
             host: process.env.HOST || 'localhost',
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASS || '',
-            database: process.env.DB_DATABASE || 'test_db'
+            database: process.env.DB_DATABASE || 'db_web_alumnos'
         });
         this.checkConnection();
     }
