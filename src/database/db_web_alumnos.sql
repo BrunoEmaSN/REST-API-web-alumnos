@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS aulas
 	id 				INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
     descripcion 	VARCHAR(50),
     capacidad 		INT(2),
+    estado			BOOLEAN NOT NULL,
     PRIMARY KEY(id)
 );
 
@@ -41,10 +42,11 @@ CREATE TABLE IF NOT EXISTS cursos
 (
 	id 			INT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
 	aula_id 	INT(2) UNSIGNED NOT NULL,
-    nivel 		CHAR(1),
-    turno 		ENUM('Mañana', 'Tarde', 'Noche'),
+    nivel 		CHAR(1) NOT NULL,
+    turno 		ENUM('Mañana', 'Tarde', 'Noche') NOT NULL,
     grado_ano 	INT(1) UNSIGNED NOT NULL,
     division 	CHAR(1),
+    estado		BOOLEAN NOT NULL,
     PRIMARY KEY(id),
     INDEX i_aula_id(aula_id),
     FOREIGN KEY (aula_id)
@@ -98,6 +100,7 @@ CREATE TABLE IF NOT EXISTS tutores
     ocupacion 				VARCHAR(50) NOT NULL,
     tiene_pareja 			BOOLEAN NOT NULL,
     telefono_laboral 		VARCHAR(15),
+    estado					BOOLEAN NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id)
 		REFERENCES datos_personales(documento)
