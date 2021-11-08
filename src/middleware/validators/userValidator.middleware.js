@@ -2,31 +2,16 @@ const { body } = require('express-validator');
 const Role = require('../../utils/userRoles.utils');
 
 exports.createUserSchema = [
+    body('id')
+        .exists()
+        .withMessage('documento is required')
+        .isLength({ min: 8 })
+        .withMessage('Must be at least 8 numbers long'),
     body('username')
         .exists()
         .withMessage('username is required')
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
-    body('first_name')
-        .exists()
-        .withMessage('Your first name is required')
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
-    body('last_name')
-        .exists()
-        .withMessage('Your last name is required')
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
-    body('email')
-        .exists()
-        .withMessage('Email is required')
-        .isEmail()
-        .withMessage('Must be a valid email')
-        .normalizeEmail(),
     body('role')
         .optional()
         .isIn([Role.Admin, Role.SuperUser])
@@ -50,27 +35,14 @@ exports.createUserSchema = [
 ];
 
 exports.updateUserSchema = [
+    body('id')
+        .optional()
+        .isLength({ min:8 })
+        .withMessage('Must be at least 8 numbers long'),
     body('username')
         .optional()
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
-    body('first_name')
-        .optional()
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
-    body('last_name')
-        .optional()
-        .isAlpha()
-        .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
-    body('email')
-        .optional()
-        .isEmail()
-        .withMessage('Must be a valid email')
-        .normalizeEmail(),
     body('role')
         .optional()
         .isIn([Role.Admin, Role.SuperUser])
@@ -88,10 +60,6 @@ exports.updateUserSchema = [
         .optional()
         .custom((value, { req }) => value === req.body.password)
         .withMessage('confirm_password field must have the same value as the password field'),
-    body('date_of_birth')
-        .optional()
-        .isDate()
-        .withMessage('Must be a valid date'),
     body()
         .custom(value => {
             return !!Object.keys(value).length;
@@ -99,7 +67,7 @@ exports.updateUserSchema = [
         .withMessage('Please provide required field to update')
         .custom(value => {
             const updates = Object.keys(value);
-            const allowUpdates = ['username', 'password', 'confirm_password', 'email', 'role', 'first_name', 'last_name', 'date_of_birth'];
+            const allowUpdates = ['id','username', 'password', 'confirm_password', 'role'];
             return updates.every(update => allowUpdates.includes(update));
         })
         .withMessage('Invalid updates!')

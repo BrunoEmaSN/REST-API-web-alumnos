@@ -1,0 +1,15 @@
+use db_web_alumnos;
+#drop table alumno_tutor;
+#drop table alumno_materia;
+#drop table alumno_mesa;
+#drop table calificaciones;
+#drop table sanciones;
+#drop table asistencias;
+#drop table alumnos;
+#drop table docente_materia;
+#drop table pareja;
+#drop table tutores;
+#drop table clases;
+#drop table docentes;
+#drop table users;
+#drop table datos_personales;

@@ -7,7 +7,8 @@ const dotenv                = require('dotenv');
 dotenv.config();
 
 class UserController{
-    getAllUser = async (req, res, next) => {
+    getAll = async (req, res, next) => {
+        console.log('hola');
         const userList = await UserModel.find();
         if(!userList.length){
             throw new HttpException(404, 'Users not found');
@@ -19,25 +20,6 @@ class UserController{
         });
 
         res.send(result);
-    }
-
-    getUserById = async (req, res, next) => {
-        const user = await UserModel.findOne({id: req.params.id});
-        if(!user){
-            throw new HttpException(404, 'User not found');
-        }
-        const { password, ...userWithoutPassword } = user;
-        res.send(userWithoutPassword);
-    }
-
-    getUserByUsername = async (req, res, next) => {
-        const user = await UserModel.findOne({username: req.params.username});
-        if(!user){
-            throw new HtppException(404, 'User not found');
-        }
-        const { password, ...userWithoutPassword } = user;
-
-        res.send(userWithoutPassword);
     }
 
     getCurrentUser = async (req, res, next) => {
@@ -93,14 +75,12 @@ class UserController{
     login = async (req, res, next) => {
         this.checkValidation(req);
         const { username, password: pass } = req.body;
-        const user = await UserModel.findOne({username});
-
+        const user = await UserModel.find({username});
         if(!user){
             throw new HttpException(401, 'Unable to login');
         }
 
         const isMatch = await bcryptjs.compare(pass, user.password);
-
         if(!isMatch){
             throw new HttpException(401, 'Incorrect password');
         }
