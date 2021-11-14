@@ -1,4 +1,4 @@
-CREATE PROCEDURE `remove_alumnos` (
+CREATE DEFINER=`root`@`localhost` PROCEDURE `remove_alumno`(
 	id INT(11) UNSIGNED
 )
 BEGIN

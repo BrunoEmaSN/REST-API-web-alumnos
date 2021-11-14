@@ -1,7 +1,4 @@
-CREATE PROCEDURE `get_all_users` (
-	id INT(11) UNSIGNED,
-    rol VARCHAR(8)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_users`()
 BEGIN
 	SELECT
 		*

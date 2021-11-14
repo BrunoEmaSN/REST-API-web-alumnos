@@ -1,4 +1,5 @@
-module.exports = {
-    Admin:      'Admin',
-    SuperUser:  'SuperUser'
-}
+"use strict";
+const userRoles = {
+    Admin: 'Admin',
+    SuperUser: 'SuperUser'
+};

@@ -1,4 +1,4 @@
-CREATE PROCEDURE `add_mesa_examen_novedad` (
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_mesa_examen_novedad`(
 	maestro_id 		INT UNSIGNED,
     materia_id 		INT UNSIGNED,
     fecha 			DATE,
@@ -19,7 +19,8 @@ BEGIN
             examinador3
         )
 	VALUES
-		(maestro_id,
+		(
+			maestro_id,
             materia_id,
             fecha,
             llamado,
