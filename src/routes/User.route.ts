@@ -1,5 +1,5 @@
 import UsersController from "../controllers/Users.controller";
-import express         from "express";
+const express             = require('express');
 const router              = express.Router();
 //const Role                = require('../utils/userRoles.utils');
 const awaitHandlerFactory = require('../middleware/awaitHandlerFactory.middleware');

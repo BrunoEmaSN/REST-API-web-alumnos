@@ -1,5 +1,5 @@
 import SancionesController from "../controllers/Sanciones.controller";
-import express from "express";
+const express             = require('express');
 const router              = express.Router();
 const awaitHandlerFactory = require('../middleware/awaitHandlerFactory.middleware');
 const auth                = require('../middleware/auth.middleware');
