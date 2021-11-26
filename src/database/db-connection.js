@@ -51,7 +51,7 @@ class DB {
             });
         });
         this.db = mysql2_1.default.createPool({
-            host: process.env.HOST || 'localhost',
+            host: process.env.DB_HOST || 'localhost',
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASS || '',
             database: process.env.DB_DATABASE || 'db_web_alumnos'
