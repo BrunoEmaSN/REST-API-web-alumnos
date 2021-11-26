@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 app.options("*", cors());
 const port = Number(3306);
+app.set('port', port);
 app.use(`/api/web/alumnos`, AlumnoRouter);
 app.use(`/api/web/aulas`, AulaRouter);
 app.use(`/api/web/calificaciones`, CalificacionRouter);
