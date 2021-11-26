@@ -54,7 +54,7 @@ class DB {
             host: process.env.DB_HOST || 'localhost',
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASS || '',
-            database: process.env.DB_DATABASE || 'db_web_alumnos'
+            database: process.env.DB_NAME || 'db_web_alumnos'
         });
         this.checkConnection();
     }
