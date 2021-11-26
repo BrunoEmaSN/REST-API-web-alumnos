@@ -24,7 +24,7 @@ app.use(cors());
 app.options("*", cors());
 
 
-const port = Number(process.env.PORT || 3331);
+const port = Number(3306);
 
 app.use(`/api/web/alumnos`, AlumnoRouter);
 app.use(`/api/web/aulas`, AulaRouter);
