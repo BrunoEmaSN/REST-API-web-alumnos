@@ -19,23 +19,23 @@ class AlumnoModel {
         });
         this.findAllAlumnos = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_all_alumnos(?)`;
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             return yield query(sql, [...values]);
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_alumno(?)`;
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             return yield query(sql, [...values]);
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const sql = `CALL add_alumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;
             return affectedRows;
         });
         this.update = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const sql = `CALL edit_alumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [id, ...values]);
             return result;

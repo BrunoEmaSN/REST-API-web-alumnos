@@ -21,25 +21,25 @@ class UserModel {
         });
         this.getById = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_user_id(?)`;
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const result = yield query(sql, [...values]);
             return result[0][0];
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_username(?)`;
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const result = yield query(sql, [...values]);
             return result[0][0];
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL add_user(?, ?, ?, ?)`;
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;
             return affectedRows;
         });
         this.update = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = common_utils_1.multipleColumnSet(params);
+            const { values } = (0, common_utils_1.multipleColumnSet)(params);
             const sql = `CALL edit_user(?, ?, ?, ?)`;
             const result = yield query(sql, [id, ...values]);
             return result;

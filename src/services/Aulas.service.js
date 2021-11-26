@@ -58,7 +58,7 @@ class AulasService {
             return 'Aula has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = express_validator_1.validationResult(req);
+            const errors = (0, express_validator_1.validationResult)(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }
