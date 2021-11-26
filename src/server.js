@@ -21,7 +21,7 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 app.options("*", cors());
-const port = Number(3306);
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 app.use(`/api/web/alumnos`, AlumnoRouter);
 app.use(`/api/web/aulas`, AulaRouter);
@@ -41,4 +41,14 @@ app.all('*', (req, res, next) => {
 });
 app.use(errorMiddleware);
 app.listen(port, () => console.log(`🚀 Server running on port ${port}!`));
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+    if (isNaN(port)) {
+        return val;
+    }
+    if (port >= 0) {
+        return port;
+    }
+    return false;
+}
 module.exports = app;
