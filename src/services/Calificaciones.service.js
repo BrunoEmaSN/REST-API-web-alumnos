@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
 const Calificacion_model_1 = __importDefault(require("../models/Calificacion.model"));
+const calificacionFormatter = require("../utils/formatter/calificacion");
 class CalificacionesService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,18 +23,19 @@ class CalificacionesService {
             if (!calificacionesList.length) {
                 throw new HttpException_utils_1.default(404, 'Calificaciones not found', null);
             }
-            return calificacionesList;
+            return calificacionesList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const calificacion = yield Calificacion_model_1.default.find({ id: req.params.id });
             if (!calificacion) {
                 throw new HttpException_utils_1.default(404, 'Calificacion not found', null);
             }
-            return calificacion;
+            return calificacion[0][0];
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Calificacion_model_1.default.update(req.params.id, req.body);
+            const calificacion = calificacionFormatter(req.body);
+            const result = yield Calificacion_model_1.default.update(calificacion);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
@@ -43,7 +45,7 @@ class CalificacionesService {
             return { message, info };
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

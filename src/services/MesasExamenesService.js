@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const MesaExamen_model_1 = __importDefault(require("../models/MesaExamen.model"));
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
+const { maestroFormatter, novedadFormatter } = require("../utils/formatter/mesaExamen");
 class MesasExamenesService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,37 +23,41 @@ class MesasExamenesService {
             if (!mesasList.length) {
                 throw new HttpException_utils_1.default(404, 'Mesas not found', null);
             }
-            return mesasList;
+            return mesasList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const mesa = yield MesaExamen_model_1.default.find({ id: req.params.id });
             if (!mesa) {
                 throw new HttpException_utils_1.default(404, 'Mesa not found', null);
             }
-            return mesa;
+            return mesa[0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
+            const maestro = maestroFormatter(req.body.maestro);
             const resultN = new Array();
-            const resultM = yield MesaExamen_model_1.default.createMaestro(req.body.maestro);
+            const resultM = yield MesaExamen_model_1.default.createMaestro(maestro);
             if (!resultM) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
-            req.body.novedad.map((novedad) => __awaiter(this, void 0, void 0, function* () {
-                resultN.push(yield this.addNovedad(novedad));
+            req.body.novedad.map((n) => __awaiter(this, void 0, void 0, function* () {
+                const novedad = novedadFormatter(n);
+                resultN.push(yield this.addNovedad(Object.assign({ maestroId: resultM.last_id }, novedad)));
             }));
-            return `Mesa was created \n${resultN}`;
+            return resultM;
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
+            const maestro = maestroFormatter(req.body.maestro);
             const resultN = new Array();
-            const resultM = yield MesaExamen_model_1.default.updateMaestro(req.params.id, req.body.maestro);
+            const resultM = yield MesaExamen_model_1.default.updateMaestro(Object.assign({ id: parseInt(req.params.id) }, maestro));
             if (!resultM) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
-            resultN.push(yield this.removeNovedad(req.params.id));
-            req.body.novedad.map((novedad) => __awaiter(this, void 0, void 0, function* () {
-                resultN.push(yield this.addNovedad(novedad));
+            resultN.push(yield this.removeNovedad(parseInt(req.params.id)));
+            req.body.novedad.map((n) => __awaiter(this, void 0, void 0, function* () {
+                const novedad = novedadFormatter(n);
+                resultN.push(yield this.addNovedad(Object.assign({ maestroId: parseInt(req.params.id) }, novedad)));
             }));
             const { affectedRows, info } = resultM;
             const message = !affectedRows ? 'Mesa not found' :
@@ -60,10 +65,7 @@ class MesasExamenesService {
             return { message, info, resultN };
         });
         this.delete = (req) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield MesaExamen_model_1.default.deleteMaestro(parseInt(req.params.id));
-            if (!result) {
-                throw new HttpException_utils_1.default(404, 'Mesa not found', null);
-            }
+            yield MesaExamen_model_1.default.deleteMaestro(parseInt(req.params.id));
             return 'Mesa has been deleted';
         });
         this.addNovedad = (req) => __awaiter(this, void 0, void 0, function* () {
@@ -74,14 +76,11 @@ class MesasExamenesService {
             return `Mesa novedad created`;
         });
         this.removeNovedad = (id) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield MesaExamen_model_1.default.deleteNovedad(id);
-            if (!result) {
-                throw new HttpException_utils_1.default(500, 'Something went wrong', null);
-            }
+            yield MesaExamen_model_1.default.deleteNovedad(id);
             return `Mesas remove`;
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

@@ -19,13 +19,14 @@ class SancionModel {
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_sancion(?)`;
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
-            return yield query(sql, [...values]);
+            const { values } = common_utils_1.multipleColumnSet(params);
+            const result = yield query(sql, [...values]);
+            return result;
         });
-        this.update = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+        this.update = (params) => __awaiter(this, void 0, void 0, function* () {
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL edit_sancion(?, ?, ?, ?, ?, ?)`;
-            const result = yield query(sql, [id, ...values]);
+            const result = yield query(sql, [...values]);
             return result;
         });
     }

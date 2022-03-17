@@ -21,7 +21,7 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 app.options("*", cors());
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 app.use(`/api/web/alumnos`, AlumnoRouter);
 app.use(`/api/web/aulas`, AulaRouter);

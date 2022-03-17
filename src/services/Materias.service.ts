@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import MateriaModel from "../models/Materia.model";
 import IMateriasService from "./interfaces/IMaterias.service";
 import HttpException from "../utils/HttpException.utils";
+const materiaFormatter = require("../utils/formatter/materia");
 
 class MateriasService implements IMateriasService{
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class MateriasService implements IMateriasService{
             throw new HttpException(404, 'Materias not found', null);
         }
 
-        return materiasList;
+        return materiasList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,7 +20,7 @@ class MateriasService implements IMateriasService{
             throw new HttpException(404, 'Materia not found', null);
         }
 
-        return materia;
+        return materia[0][0];
     }
 
     create = async (req: any): Promise<string> => {
@@ -29,12 +30,13 @@ class MateriasService implements IMateriasService{
             throw new HttpException(500, 'Something went wrong', null);
         }
 
-        return 'Materia was created';
+        return result;
     }
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await MateriaModel.update(req.params.id, req.body);
+        const materia = materiaFormatter(req.body);
+        const result = await MateriaModel.update(materia);
         if(!result){
             throw new HttpException(404, 'Someting went wrong', null);
         }

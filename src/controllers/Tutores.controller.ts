@@ -20,7 +20,7 @@ class TutoresController {
         res: { send: (arg0: unknown) => void; },
         next: any
     ) => {
-        res.send(this._tutoresService.getById(req));
+        res.send(await this._tutoresService.getById(req));
     }
 
     getAllWithPareja = async (

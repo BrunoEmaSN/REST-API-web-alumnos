@@ -15,27 +15,21 @@ const auth = (...roles) => {
             }
 
             const token     = authHeader.replace(bearer, '');
-            const secretKey = process.env.SECRET_JWT || "";
+            const secretKey = process.env.SECRET_JWT || '';
 
-            // Verify Token
             const decoded   = jwt.verify(token, secretKey);
-            const user      = await UserModel.find({ id: decoded.user_id });
+            const user      = await UserModel.default.find({ id: decoded.user_id });
 
             if (!user) {
                 throw new HttpException(401, 'Authentication failed!');
             }
 
-            // check if the current user is the owner user
             const ownerAuthorized = req.params.id == user.id;
 
-            // if the current user is not the owner and
-            // if the user role don't have the permission to do this action.
-            // the user will get this error
             if (!ownerAuthorized && roles.length && !roles.includes(user.role)) {
                 throw new HttpException(401, 'Unauthorized');
             }
 
-            // if the user has permissions
             req.currentUser = user;
             next();
 

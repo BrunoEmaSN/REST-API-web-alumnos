@@ -3,6 +3,7 @@ import IAlumnosService from "./interfaces/IAlumnos.service";
 import HttpException from "../utils/HttpException.utils";
 import { validationResult } from "express-validator";
 import { Request } from "express-validator/src/base";
+const alumnoFormatter = require("../utils/formatter/alumno");
 
 class AlumnosService implements IAlumnosService{
     getAll = async (): Promise<Array<any>> => {
@@ -11,30 +12,31 @@ class AlumnosService implements IAlumnosService{
             throw new HttpException(404, 'Alumnos not found', null);
         }
 
-        return alumnosList;
+        return alumnosList[0];
     }
 
     getById = async (req: any): Promise<any> => {
-        const alumno = await AlumnoModel.findAllAlumnos({id: req.params.id});
+        const alumno = await AlumnoModel.find({id: req.params.id});
         if(!alumno){
             throw new HttpException(404, 'Alumnos not found', null);
         }
 
-        return alumno;
+        return alumno[0][0];
     }
 
     getByCurso = async (req: any): Promise<any> => {
-        const cursoAlumnos: any = await AlumnoModel.find({curso_id: req.params.curso_id});
+        const cursoAlumnos: any = await AlumnoModel.findAllAlumnos({curso_id: req.params.curso_id});
         if(!cursoAlumnos.length){
             throw new HttpException(404, 'Alumnos not found', null);
         }
 
-        return cursoAlumnos;
+        return cursoAlumnos[0];
     }
 
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
-        const result  = await AlumnoModel.create(req.body); 
+        const alumno = alumnoFormatter(req.body);
+        const result  = await AlumnoModel.create(alumno); 
         if(!result){
             throw new HttpException(500, 'Something went wrong', null);
         }
@@ -44,14 +46,15 @@ class AlumnosService implements IAlumnosService{
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result: any = await AlumnoModel.update(req.params.id, req.body);
+        const alumno = alumnoFormatter(req.body);
+        const result: any = await AlumnoModel.update(alumno);
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }
         const {affectedRows, info} = result;
         const message = !affectedRows ? 'Alumno not found' :
         affectedRows ? 'Alumno update successfuly' : 'Update faild';
-        
+
         return {message, info};
     }
 

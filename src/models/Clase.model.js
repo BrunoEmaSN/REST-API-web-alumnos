@@ -19,20 +19,19 @@ class ClaseModel {
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_clase(?)`;
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             return yield query(sql, [...values]);
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_clase(?, ?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [...values]);
-            const affectedRows = result ? result.affectedRows : 0;
-            return affectedRows;
+            return result;
         });
-        this.update = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+        this.update = (params) => __awaiter(this, void 0, void 0, function* () {
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL edit_clase(?, ?, ?, ?, ?, ?, ?, ?)`;
-            const result = yield query(sql, [id, ...values]);
+            const result = yield query(sql, [...values]);
             return result;
         });
         this.delete = (id) => __awaiter(this, void 0, void 0, function* () {

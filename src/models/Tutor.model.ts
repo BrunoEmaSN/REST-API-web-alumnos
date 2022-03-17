@@ -35,10 +35,10 @@ class TutorModel {
         return affectedRows;
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL edit_tutor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const result        = await query(sql, [id, ...values]);
+        const result        = await query(sql, [...values]);
         const affectedRows  = result ? result.affectedRows : 0;
 
         return result;

@@ -18,7 +18,7 @@ class DocenteMateriaModel {
             return yield query(sql, [id]);
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_docente_materia(?, ?)`;
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;

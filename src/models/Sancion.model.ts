@@ -10,14 +10,15 @@ class SancionModel {
     find = async (params: any) => {
         const sql       = `CALL find_sancion(?)`;
         const {values}  = multipleColumnSet(params);
+        const result = await query(sql, [...values]);
 
-        return await query(sql, [...values]);
+        return result;
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL edit_sancion(?, ?, ?, ?, ?, ?)`;
-        const result        = await query(sql, [id, ...values]);
+        const result        = await query(sql, [...values]);
 
         return result;
     }

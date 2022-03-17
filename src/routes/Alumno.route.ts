@@ -17,6 +17,7 @@ router.post('/alumno_tutor/', auth(), awaitHandlerFactory(AlumnosTutoresControll
 router.post('/alumno_materia/', auth(), awaitHandlerFactory(AlumnosMateriasController.create));
 
 router.put('/id/:id', auth(), awaitHandlerFactory(AlumnosController.update));
+router.put('/alumno_tutor/id/:id', auth(), awaitHandlerFactory(AlumnosTutoresController.update));
 router.put('/alumno_materia/id/:id', auth(), awaitHandlerFactory(AlumnosMateriasController.update));
 
 router.delete('/id/:id', auth(), awaitHandlerFactory(AlumnosController.delete));

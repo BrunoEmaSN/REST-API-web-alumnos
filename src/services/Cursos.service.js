@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
 const Curso_model_1 = __importDefault(require("../models/Curso.model"));
+const cursoFormatter = require("../utils/formatter/curso");
 class CursosService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,14 +23,14 @@ class CursosService {
             if (!cursosList) {
                 throw new HttpException_utils_1.default(404, 'Cursos not found', null);
             }
-            return cursosList;
+            return cursosList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const curso = yield Curso_model_1.default.find({ id: req.params.id });
             if (!curso) {
                 throw new HttpException_utils_1.default(404, 'Curso not found', null);
             }
-            return curso;
+            return curso[0][0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
@@ -37,18 +38,16 @@ class CursosService {
             if (!result) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
-            return 'Curso was created';
+            return result;
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Curso_model_1.default.update(req.params.id, req.body);
+            const curso = cursoFormatter(req.body);
+            const result = yield Curso_model_1.default.update(curso);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
-            const { affectedRows, info } = result;
-            const message = !affectedRows ? 'Curso not found' :
-                affectedRows ? 'Curso update successfuly' : 'Update faild';
-            return { message, info };
+            return result;
         });
         this.delete = (req) => __awaiter(this, void 0, void 0, function* () {
             const result = yield Curso_model_1.default.delete(req.params.id);
@@ -58,7 +57,7 @@ class CursosService {
             return 'Curso has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

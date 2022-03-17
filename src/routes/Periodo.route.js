@@ -8,6 +8,6 @@ const express = require('express');
 const router = express.Router();
 const awaitHandlerFactory = require('../middleware/awaitHandlerFactory.middleware');
 const auth = require('../middleware/auth.middleware');
-router.get('/', auth(), awaitHandlerFactory(Periodos_controller_1.default.getAll));
+router.get('/tipo/:tipo', auth(), awaitHandlerFactory(Periodos_controller_1.default.getAll));
 router.post('/', auth(), awaitHandlerFactory(Periodos_controller_1.default.create));
 module.exports = router;

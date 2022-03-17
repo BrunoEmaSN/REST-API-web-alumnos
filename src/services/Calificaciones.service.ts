@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import HttpException from "../utils/HttpException.utils";
 import CalificacionModel from "../models/Calificacion.model";
 import ICalificacionesService from "./interfaces/ICalificaciones.service";
+const calificacionFormatter = require("../utils/formatter/calificacion");
 
 class CalificacionesService implements ICalificacionesService{
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class CalificacionesService implements ICalificacionesService{
             throw new HttpException(404, 'Calificaciones not found', null);
         }
 
-        return calificacionesList;
+        return calificacionesList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,12 +20,13 @@ class CalificacionesService implements ICalificacionesService{
             throw new HttpException(404, 'Calificacion not found', null);
         }
 
-        return calificacion;
+        return calificacion[0][0];
     }
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await CalificacionModel.update(req.params.id, req.body);
+        const calificacion = calificacionFormatter(req.body);
+        const result = await CalificacionModel.update(calificacion);
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }

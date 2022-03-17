@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Alumno_model_1 = __importDefault(require("../models/Alumno.model"));
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
 const express_validator_1 = require("express-validator");
+const alumnoFormatter = require("../utils/formatter/alumno");
 class AlumnosService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,25 +23,26 @@ class AlumnosService {
             if (!alumnosList.length) {
                 throw new HttpException_utils_1.default(404, 'Alumnos not found', null);
             }
-            return alumnosList;
+            return alumnosList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
-            const alumno = yield Alumno_model_1.default.findAllAlumnos({ id: req.params.id });
+            const alumno = yield Alumno_model_1.default.find({ id: req.params.id });
             if (!alumno) {
                 throw new HttpException_utils_1.default(404, 'Alumnos not found', null);
             }
-            return alumno;
+            return alumno[0][0];
         });
         this.getByCurso = (req) => __awaiter(this, void 0, void 0, function* () {
-            const cursoAlumnos = yield Alumno_model_1.default.find({ curso_id: req.params.curso_id });
+            const cursoAlumnos = yield Alumno_model_1.default.findAllAlumnos({ curso_id: req.params.curso_id });
             if (!cursoAlumnos.length) {
                 throw new HttpException_utils_1.default(404, 'Alumnos not found', null);
             }
-            return cursoAlumnos;
+            return cursoAlumnos[0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Alumno_model_1.default.create(req.body);
+            const alumno = alumnoFormatter(req.body);
+            const result = yield Alumno_model_1.default.create(alumno);
             if (!result) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
@@ -48,7 +50,8 @@ class AlumnosService {
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Alumno_model_1.default.update(req.params.id, req.body);
+            const alumno = alumnoFormatter(req.body);
+            const result = yield Alumno_model_1.default.update(alumno);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
@@ -65,7 +68,7 @@ class AlumnosService {
             return 'Alumno has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

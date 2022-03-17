@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
 const Aula_model_1 = __importDefault(require("../models/Aula.model"));
+const aulaFormatter = require("../utils/formatter/aula");
 class AulasService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,14 +23,14 @@ class AulasService {
             if (!aulasList.length) {
                 throw new HttpException_utils_1.default(404, 'Aulas not found', null);
             }
-            return aulasList;
+            return aulasList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const aula = yield Aula_model_1.default.find({ id: req.params.id });
             if (!aula) {
                 throw new HttpException_utils_1.default(404, 'Aulas not found', null);
             }
-            return aula;
+            return aula[0][0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
@@ -37,11 +38,12 @@ class AulasService {
             if (!result) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
-            return 'Aula was created';
+            return result[0][0];
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Aula_model_1.default.update(req.params.id, req.body);
+            const aula = aulaFormatter(req.body);
+            const result = yield Aula_model_1.default.update(aula);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
@@ -58,7 +60,7 @@ class AulasService {
             return 'Aula has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

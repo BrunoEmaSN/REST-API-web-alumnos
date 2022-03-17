@@ -14,7 +14,7 @@ const query = require('../database/db-connection.js');
 class ParejaModel {
     constructor() {
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_pareja(?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;

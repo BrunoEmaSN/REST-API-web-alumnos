@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import HttpException from "../utils/HttpException.utils";
 import CursoModel from "../models/Curso.model";
 import ICursosService from "./interfaces/ICursos.service";
+const cursoFormatter = require("../utils/formatter/curso");
 
 class CursosService implements ICursosService{
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class CursosService implements ICursosService{
             throw new HttpException(404, 'Cursos not found', null);
         }
 
-        return cursosList;
+        return cursosList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,7 +20,7 @@ class CursosService implements ICursosService{
             throw new HttpException(404, 'Curso not found', null);
         }
 
-        return curso;
+        return curso[0][0];
     }
 
     create = async (req: any): Promise<string> => {
@@ -29,21 +30,17 @@ class CursosService implements ICursosService{
             throw new HttpException(500, 'Something went wrong', null);
         }
         
-        return 'Curso was created';
+        return result;
     }
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await CursoModel.update(req.params.id, req.body);
+        const curso = cursoFormatter(req.body);
+        const result = await CursoModel.update( curso );
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }
-
-        const {affectedRows, info} = result;
-        const message = !affectedRows ? 'Curso not found' :
-            affectedRows ? 'Curso update successfuly' : 'Update faild';
-
-        return {message, info};
+        return result;
     }
     
     delete = async (req: any): Promise<string> => {

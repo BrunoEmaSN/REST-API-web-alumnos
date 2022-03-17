@@ -3,6 +3,7 @@ import ParejaModel from "../models/Pareja.model";
 import TutorModel from "../models/Tutor.model";
 import ITutoresService from "./interfaces/ITutores.service";
 import HttpException from "../utils/HttpException.utils";
+const { tutorFormatter, parejaFormatter } = require("../utils/formatter/tutor");
 
 class TutoresService implements ITutoresService {
     getAll = async (): Promise<any> => {
@@ -11,7 +12,7 @@ class TutoresService implements ITutoresService {
             throw new HttpException(404, 'Tutores not found', null);
         }
 
-        return tutoresList;
+        return tutoresList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,8 +20,7 @@ class TutoresService implements ITutoresService {
         if(!tutor){
             throw new HttpException(404, 'Tutor not found', null);
         }
-
-        return tutor;
+        return tutor[0][0];
     }
 
     getAllWithPareja = async (): Promise<any> => {
@@ -29,7 +29,7 @@ class TutoresService implements ITutoresService {
             throw new HttpException(404, 'Tutores not found', null);
         }
 
-        return tutoresWithPareja;
+        return tutoresWithPareja[0];
     }
 
     getByIdWithPareja = async (req: any): Promise<any> => {
@@ -38,18 +38,20 @@ class TutoresService implements ITutoresService {
             throw new HttpException(404, 'Tutor not found', null);
         }
 
-        return tutorWithPareja;
+        return tutorWithPareja[0][0];
     }
 
     create = async(req: any): Promise<string> => {
         this.checkValidation(req);
+        const tutor = tutorFormatter( req.body );
+        const resultT = await TutorModel.create( tutor );
         const resultP = new Array();
-        const resultT = await TutorModel.create(req.body.tutor);
         if(!resultT){
             throw new HttpException(500, 'Something went wrong', null);
         }
-        if(req.body.tutor.tiene_pareja){
-            resultP.push(await this.addPareja(req.body.pareja));
+        if(tutor.tienePareja){
+            const pareja = parejaFormatter( req.body );
+            resultP.push(await this.addPareja( pareja ));
         }
 
         return `Tutor was created ${resultP}`;
@@ -57,17 +59,21 @@ class TutoresService implements ITutoresService {
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const resultT = await TutorModel.update(req.params.id, req.body.tutor);
+        const tutor = tutorFormatter( req.body );
+        const resultT = await TutorModel.update(tutor);
         const resultP = new Array();
+        
         if(!resultT){
             throw new HttpException(404, 'Something went wrong', null);
         }
-        if(req.body.tutor.tiene_pareja){
+
+        if(tutor.tienePareja){
+            const pareja = parejaFormatter( req.body );
             resultP.push(await this.removePareja(req.params.id));
-            resultP.push(await this.addPareja(req.body.pareja));
+            resultP.push(await this.addPareja(pareja));
         }
         else{
-            resultP.push(await this.addPareja(req.params.id));
+            resultP.push(await this.removePareja(req.params.id));
         }
 
         const {affectedRows, info} = resultT;

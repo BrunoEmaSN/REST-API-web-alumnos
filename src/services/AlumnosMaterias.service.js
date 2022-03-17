@@ -22,12 +22,16 @@ class AlumnosMateriasService {
             if (!alumno) {
                 throw new HttpException_utils_1.default(404, 'Alumno not found', null);
             }
-            return alumno;
+            return alumno[0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            req.body.map((alumnoMateria) => __awaiter(this, void 0, void 0, function* () {
-                let result = yield AlumnoMateria_model_1.default.create(alumnoMateria);
+            req.body.materias.map((materia) => __awaiter(this, void 0, void 0, function* () {
+                let result = yield AlumnoMateria_model_1.default.create({
+                    documento: req.body.documento,
+                    materiId: materia.id,
+                    estado: materia.estado
+                });
                 if (!result) {
                     throw new HttpException_utils_1.default(500, 'Something went wrong', null);
                 }
@@ -36,25 +40,18 @@ class AlumnosMateriasService {
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield AlumnoMateria_model_1.default.update(req.params.id, req.body);
-            if (!result) {
-                throw new HttpException_utils_1.default(404, 'Something went wrong', null);
-            }
-            const { affectedRows, info } = result;
-            console.log(result);
-            const message = !affectedRows ? 'Alumno not found' :
-                affectedRows ? 'Alumno update successfuly' : 'Update faild';
-            return { message, info };
+            const result = new Array();
+            result.push(yield this.delete(req));
+            result.push(yield this.create(req));
+            const message = 'Alumno update successfuly';
+            return { message };
         });
         this.delete = (req) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield AlumnoMateria_model_1.default.delete(req.params.id);
-            if (!result) {
-                throw new HttpException_utils_1.default(404, 'Alumno Materia not found', null);
-            }
+            yield AlumnoMateria_model_1.default.delete(req.params.id);
             return 'Alumno Materia has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

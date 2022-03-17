@@ -6,28 +6,38 @@ import IDocentesMateriasService from "./interfaces/IDocentesMaterias.service";
 class DocentesMateriasService implements IDocentesMateriasService{
     getByDocente = async (req: any): Promise<any> => {
         const docenteMaterias = await DocenteMateriaModel.getByDocente(req.params.id);
-        if(!docenteMaterias.length){
-            throw new HttpException(404, 'Docentes not found', null);
-        }
-        return docenteMaterias;
+        return docenteMaterias[0];
     }
     
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
-        req.body.map(async (docenteMateria: ArrayLike<unknown> | { [s: string]: unknown; }) => {
-            let result = await DocenteMateriaModel.create(docenteMateria);
+
+        req.body.materias.map(async (materia: any) => {
+            let result = await DocenteMateriaModel.create({
+                documento: req.body.documento,
+                materiaId: materia.id
+            });
             if(!result){
                 throw new HttpException(500, 'Something went wrong', null);
             }
         });
+        
         return 'Docente Materia was created';
+    }
+
+    update = async (req: any): Promise<any> => {
+        this.checkValidation(req);
+
+        const result = new Array();
+        result.push( await this.delete(req) );
+        result.push( await this.create(req) );
+
+        const message = 'Docente update successfuly';
+        return {message};
     }
 
     delete = async (req: any): Promise<string> => {
         const result = await DocenteMateriaModel.delete(req.params.id);
-        if(!result){
-            throw new HttpException(404, 'Docente Materia not found', null);
-        }
         return 'Docente Materia has been deleted';
     }
 

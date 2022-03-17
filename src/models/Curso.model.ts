@@ -18,17 +18,16 @@ class CursoModel {
         const {values}      = multipleColumnSet(params);
         const sql           = 'CALL add_curso(?, ?, ?, ?, ?)';
         const result        = await query(sql, [...values]);
-        const affectedRows  = result ? result.affectedRows : 0;
 
-        return affectedRows;
+        return result[0][0];
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL edit_curso(?, ?, ?, ?, ?, ?)`;
-        const result        = await query(sql, [id, ...values]);
+        const result        = await query(sql, [ ...values ]);
 
-        return result;
+        return result[0][0];
     }
 
     delete = async (id: any) => {

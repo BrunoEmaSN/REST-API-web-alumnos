@@ -15,10 +15,10 @@ class AlumnoModel {
     }
 
     find = async (params: any) => {
-        const sql           = `CALL find_alumno(?)`;
-        const { values }  = multipleColumnSet(params);
-
-        return await query(sql, [...values]);
+        const sql        = `CALL find_alumno(?)`;
+        const { values } = multipleColumnSet(params);
+        const result     = await query(sql, [...values]);
+        return result;
     }
 
     create = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
@@ -30,10 +30,10 @@ class AlumnoModel {
         return affectedRows;
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
         const {values}  = multipleColumnSet(params);
         const sql       = `CALL edit_alumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const result    = await query(sql, [id, ...values]);
+        const result    = await query(sql, [...values]);
 
         return result;
     }

@@ -18,7 +18,7 @@ class TutorModel {
             return yield query(sql);
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL find_tutor(?)`;
             return yield query(sql, [...values]);
         });
@@ -27,21 +27,21 @@ class TutorModel {
             return yield query(sql);
         });
         this.findWithPareja = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL find_tutor_pareja(?)`;
             return yield query(sql, [...values]);
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_tutor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;
             return affectedRows;
         });
-        this.update = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+        this.update = (params) => __awaiter(this, void 0, void 0, function* () {
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL edit_tutor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            const result = yield query(sql, [id, ...values]);
+            const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;
             return result;
         });

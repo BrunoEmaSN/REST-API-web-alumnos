@@ -19,7 +19,7 @@ class AlumnoMateriaModel{
     }
 
     update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-        const {values}  = multipleColumnSet(params);
+        const { values }  = multipleColumnSet(params);
         const sql       = `CALL edit_alumno_materia(?, ?)`;
         const result    = await query(sql, [id, ...values]);
 

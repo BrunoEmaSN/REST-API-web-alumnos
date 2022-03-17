@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Docente_model_1 = __importDefault(require("../models/Docente.model"));
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
 const express_validator_1 = require("express-validator");
+const docenteFormatter = require("../utils/formatter/docente");
 class DocentesService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,18 +23,19 @@ class DocentesService {
             if (!docentesList.length) {
                 throw new HttpException_utils_1.default(404, 'Docentes not found', null);
             }
-            return docentesList;
+            return docentesList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const docente = yield Docente_model_1.default.find({ id: req.params.id });
             if (!docente) {
                 throw new HttpException_utils_1.default(404, 'Docente not found', null);
             }
-            return docente;
+            return docente[0][0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Docente_model_1.default.create(req.body);
+            const docente = docenteFormatter(req.body);
+            const result = yield Docente_model_1.default.create(docente);
             if (!result) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
@@ -41,11 +43,12 @@ class DocentesService {
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Docente_model_1.default.update(req.params.id, req.body);
+            const docente = docenteFormatter(req.body);
+            const result = yield Docente_model_1.default.update(docente);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
-            const { affectedRows, changedRows, info } = result;
+            const { affectedRows, info } = result;
             const message = !affectedRows ? 'Docente not found' :
                 affectedRows ? 'Docente update successfuly' : 'Update faild';
             return { message, info };
@@ -58,7 +61,7 @@ class DocentesService {
             return 'Docente has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

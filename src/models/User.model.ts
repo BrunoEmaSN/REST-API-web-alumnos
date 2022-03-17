@@ -13,7 +13,7 @@ class UserModel {
         const sql    = `CALL find_user_id(?)`;
         const {values} = multipleColumnSet(params);
         const result = await query(sql, [...values]);
-        return result[0][0];
+        return result[0];
     }
 
     find = async (params: any) => {

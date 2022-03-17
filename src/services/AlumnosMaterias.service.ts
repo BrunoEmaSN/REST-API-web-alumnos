@@ -10,14 +10,17 @@ class AlumnosMateriasService implements IAlumnnosMateriasService {
         if(!alumno){
             throw new HttpException(404, 'Alumno not found', null);
         }
-
-        return alumno;
+        return alumno[0];
     }
 
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
-        req.body.map(async (alumnoMateria: any) => {
-            let result = await AlumnoMateriaModel.create(alumnoMateria);
+        req.body.materias.map(async (materia: any) => {
+            let result = await AlumnoMateriaModel.create({
+                documento: req.body.documento,
+                materiId: materia.id,
+                estado: materia.estado
+            });
             if(!result){
                 throw new HttpException(500, 'Something went wrong', null);
             }
@@ -28,24 +31,17 @@ class AlumnosMateriasService implements IAlumnnosMateriasService {
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await AlumnoMateriaModel.update(req.params.id, req.body);
-        if(!result){
-            throw new HttpException(404, 'Something went wrong', null);
-        }
-        const {affectedRows, info} = result;
-        console.log(result);
-        const message = !affectedRows ? 'Alumno not found' :
-        affectedRows ? 'Alumno update successfuly' : 'Update faild';
 
-        return {message, info};
+        const result = new Array();
+        result.push( await this.delete(req) );
+        result.push( await this.create(req) );
+
+        const message = 'Alumno update successfuly';
+        return {message};
     }
 
     delete = async (req: any): Promise<string> => {
-        const result = await AlumnoMateriaModel.delete(req.params.id);
-        if(!result){
-            throw new HttpException(404, 'Alumno Materia not found', null);
-        }
-
+        await AlumnoMateriaModel.delete(req.params.id);
         return 'Alumno Materia has been deleted';
     }
     

@@ -11,10 +11,11 @@ const awaitHandlerFactory = require('../middleware/awaitHandlerFactory.middlewar
 const auth = require('../middleware/auth.middleware');
 router.get('/', auth(), awaitHandlerFactory(Docentes_controller_1.default.getAll));
 router.get('/id/:id', auth(), awaitHandlerFactory(Docentes_controller_1.default.getById));
-router.get('/doconte_materia/id/:id', auth(), awaitHandlerFactory(DocentesMaterias_controller_1.default.getByDocente));
+router.get('/docente_materia/id/:id', auth(), awaitHandlerFactory(DocentesMaterias_controller_1.default.getByDocente));
 router.post('/', auth(), awaitHandlerFactory(Docentes_controller_1.default.create));
 router.post('/docente_materia/', auth(), awaitHandlerFactory(DocentesMaterias_controller_1.default.create));
 router.put('/id/:id', auth(), awaitHandlerFactory(Docentes_controller_1.default.update));
+router.put('/docente_materia/id/:id', auth(), awaitHandlerFactory(DocentesMaterias_controller_1.default.update));
 router.delete('/id/:id', auth(), awaitHandlerFactory(Docentes_controller_1.default.delete));
 router.delete('/docente_materia/id/:id', auth(), awaitHandlerFactory(DocentesMaterias_controller_1.default.delete));
 module.exports = router;

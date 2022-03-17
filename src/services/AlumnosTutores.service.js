@@ -22,7 +22,7 @@ class AlumnosTutoresService {
             if (!alumno) {
                 throw new HttpException_utils_1.default(404, 'Alumno not found', null);
             }
-            return alumno;
+            return alumno[0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
@@ -34,16 +34,20 @@ class AlumnosTutoresService {
             }));
             return 'Alumno Tutor was created';
         });
+        this.update = (req) => __awaiter(this, void 0, void 0, function* () {
+            this.checkValidation(req);
+            const result = new Array();
+            result.push(yield this.delete(req));
+            result.push(yield this.create(req));
+            return 'Alumno Tutor was update';
+        });
         this.delete = (req) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield AlumnoTutor_model_1.default.delete(req.params.id);
-            if (!result) {
-                throw new HttpException_utils_1.default(404, 'Alumno Tutor not found', null);
-            }
+            yield AlumnoTutor_model_1.default.delete(req.params.id);
             return 'Alumno Tutor has been deleted';
         });
     }
     checkValidation(req) {
-        const errors = (0, express_validator_1.validationResult)(req);
+        const errors = express_validator_1.validationResult(req);
         if (!errors.isEmpty()) {
             throw new HttpException_utils_1.default(400, 'Validation faild', errors);
         }

@@ -19,30 +19,35 @@ class DocentesMateriasService {
     constructor() {
         this.getByDocente = (req) => __awaiter(this, void 0, void 0, function* () {
             const docenteMaterias = yield DocenteMateria_model_1.default.getByDocente(req.params.id);
-            if (!docenteMaterias.length) {
-                throw new HttpException_utils_1.default(404, 'Docentes not found', null);
-            }
-            return docenteMaterias;
+            return docenteMaterias[0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            req.body.map((docenteMateria) => __awaiter(this, void 0, void 0, function* () {
-                let result = yield DocenteMateria_model_1.default.create(docenteMateria);
+            req.body.materias.map((materia) => __awaiter(this, void 0, void 0, function* () {
+                let result = yield DocenteMateria_model_1.default.create({
+                    documento: req.body.documento,
+                    materiaId: materia.id
+                });
                 if (!result) {
                     throw new HttpException_utils_1.default(500, 'Something went wrong', null);
                 }
             }));
             return 'Docente Materia was created';
         });
+        this.update = (req) => __awaiter(this, void 0, void 0, function* () {
+            this.checkValidation(req);
+            const result = new Array();
+            result.push(yield this.delete(req));
+            result.push(yield this.create(req));
+            const message = 'Docente update successfuly';
+            return { message };
+        });
         this.delete = (req) => __awaiter(this, void 0, void 0, function* () {
             const result = yield DocenteMateria_model_1.default.delete(req.params.id);
-            if (!result) {
-                throw new HttpException_utils_1.default(404, 'Docente Materia not found', null);
-            }
             return 'Docente Materia has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

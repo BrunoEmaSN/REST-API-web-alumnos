@@ -18,15 +18,14 @@ class MateriaModel {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL add_materia(?, ?, ?)`;
         const result        = await query(sql, [...values]);
-        const affectedRows  = result ? result.affectedRows : 0;
 
-        return affectedRows;
+        return result[0][0];
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL edit_materia(?, ?, ?, ?)`;
-        const result        = await query(sql, [id, ...values]);
+        const result        = await query(sql, [...values]);
 
         return result;
     }

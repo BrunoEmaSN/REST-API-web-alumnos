@@ -19,7 +19,7 @@ class TutoresController {
             res.send(yield this._tutoresService.getAll());
         });
         this.getById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            res.send(this._tutoresService.getById(req));
+            res.send(yield this._tutoresService.getById(req));
         });
         this.getAllWithPareja = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             res.send(yield this._tutoresService.getAllWithPareja());

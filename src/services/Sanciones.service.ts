@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import SancionModel from "../models/Sancion.model";
 import HttpException from "../utils/HttpException.utils";
 import ISancionesService from "./interfaces/ISanciones.service";
+const sancionFormatter = require("../utils/formatter/sancion");
 
 class SancionesService implements ISancionesService {
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class SancionesService implements ISancionesService {
             throw new HttpException(404, 'Sanciones not found', null);
         }
 
-        return sancionesList;
+        return sancionesList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,11 +20,13 @@ class SancionesService implements ISancionesService {
             throw new HttpException(404, 'Sancion not found', null);
         }
 
-        return sancion;
+        return sancion[0][0];
     }
 
     update = async (req: any): Promise<any> => {
-        const result = await SancionModel.update(req.params.id, req.body);
+        const sancion = sancionFormatter(req.body);
+        console.log(sancion);
+        const result = await SancionModel.update(sancion);
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }

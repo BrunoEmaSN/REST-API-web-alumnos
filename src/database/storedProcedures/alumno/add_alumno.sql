@@ -1,8 +1,8 @@
-CREATE PROCEDURE `add_alumno` (
-	documento			INT(11) UNSIGNED,
-    tipo_documento 		VARCHAR(4),
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_alumno`(
     nombre 				VARCHAR(50),
     apellido 			VARCHAR(50),
+    tipo_documento 		VARCHAR(4),
+    documento			INT(11) UNSIGNED,
     fecha_nacimiento 	DATE,
     sexo 				VARCHAR(9),
     lugar_nacimiento 	VARCHAR(75),
@@ -13,7 +13,6 @@ CREATE PROCEDURE `add_alumno` (
     departamento 		VARCHAR(75),
     piso 				INT UNSIGNED,
     
-    curso_id			INT(2) UNSIGNED,
     fecha_agregado 		DATE,
     partida_nacimiento 	BOOLEAN,
     fotocopia_dni 		BOOLEAN,
@@ -21,7 +20,8 @@ CREATE PROCEDURE `add_alumno` (
     foto_4x4 			BOOLEAN,
     contrato 			BOOLEAN,
     observaciones 		VARCHAR(100),
-    condicion 			VARCHAR(11)
+    condicion 			VARCHAR(11),
+    curso_id			INT(2) UNSIGNED
 )
 BEGIN
 	CALL add_datos_personales(

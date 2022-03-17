@@ -18,16 +18,15 @@ class AulaModel {
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL add_aula(?, ?)`;
         const result        = await query(sql, [...values]);
-        const affectedRows  = result ? result.affectedRows : 0;
 
-        return affectedRows;
+        return result;
     }
 
-    update = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-        const {values}      = multipleColumnSet(params);
+    update = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+        const {values}      = multipleColumnSet( params );
         const sql           = 'CALL edit_aula(?, ?, ?)';
-        const result        = await query(sql, [id, ...values]);
-
+        const result        = await query(sql, [ ...values ]);
+        
         return result;
     }
 

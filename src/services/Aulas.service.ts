@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import HttpException from "../utils/HttpException.utils";
 import AulaModel from "../models/Aula.model";
 import IAulasService from "./interfaces/IAulas.service";
+const aulaFormatter = require("../utils/formatter/aula");
 
 class AulasService implements IAulasService {
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class AulasService implements IAulasService {
             throw new HttpException(404, 'Aulas not found', null);
         }
 
-        return aulasList;
+        return aulasList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -19,7 +20,7 @@ class AulasService implements IAulasService {
             throw new HttpException(404, 'Aulas not found', null);
         }
         
-        return aula;
+        return aula[0][0];
     }
 
     create = async (req: any): Promise<string> => {
@@ -29,12 +30,13 @@ class AulasService implements IAulasService {
             throw new HttpException(500, 'Something went wrong', null);
         }
 
-        return 'Aula was created';
+        return result[0][0];
     }
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await AulaModel.update(req.params.id, req.body);
+        const aula = aulaFormatter( req.body );
+        const result = await AulaModel.update( aula );
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }

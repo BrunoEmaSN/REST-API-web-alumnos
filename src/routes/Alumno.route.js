@@ -19,6 +19,7 @@ router.post('/', auth(), awaitHandlerFactory(Alumnos_controller_1.default.create
 router.post('/alumno_tutor/', auth(), awaitHandlerFactory(AlumnosTutores_controller_1.default.create));
 router.post('/alumno_materia/', auth(), awaitHandlerFactory(AlumnosMaterias_controller_1.default.create));
 router.put('/id/:id', auth(), awaitHandlerFactory(Alumnos_controller_1.default.update));
+router.put('/alumno_tutor/id/:id', auth(), awaitHandlerFactory(AlumnosTutores_controller_1.default.update));
 router.put('/alumno_materia/id/:id', auth(), awaitHandlerFactory(AlumnosMaterias_controller_1.default.update));
 router.delete('/id/:id', auth(), awaitHandlerFactory(Alumnos_controller_1.default.delete));
 router.delete('/alumno_tutor/id/:id', auth(), awaitHandlerFactory(Alumnos_controller_1.default.delete));

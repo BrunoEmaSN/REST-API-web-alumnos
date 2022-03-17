@@ -2,6 +2,7 @@ import IDocentesService from "./interfaces/IDocentes.service";
 import DocenteModel from "../models/Docente.model";
 import HttpException from "../utils/HttpException.utils";
 import { validationResult } from "express-validator";
+const docenteFormatter = require("../utils/formatter/docente");
 
 class DocentesService implements IDocentesService {
     getAll = async (): Promise<any> => {
@@ -9,7 +10,7 @@ class DocentesService implements IDocentesService {
         if(!docentesList.length){
             throw new HttpException(404, 'Docentes not found', null);
         }
-        return docentesList;
+        return docentesList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -17,12 +18,13 @@ class DocentesService implements IDocentesService {
         if(!docente){
             throw new HttpException(404, 'Docente not found', null);
         }
-        return docente;
+        return docente[0][0];
     }
 
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
-        const result = await DocenteModel.create(req.body);
+        const docente = docenteFormatter(req.body);
+        const result = await DocenteModel.create(docente);
         if(!result){
             throw new HttpException(500, 'Something went wrong', null);
         }
@@ -31,12 +33,13 @@ class DocentesService implements IDocentesService {
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
-        const result = await DocenteModel.update(req.params.id, req.body);
+        const docente = docenteFormatter(req.body);
+        const result = await DocenteModel.update(docente);
         if(!result){
             throw new HttpException(404, 'Something went wrong', null);
         }
 
-        const {affectedRows, changedRows, info} = result;
+        const {affectedRows, info} = result;
 
         const message = !affectedRows ? 'Docente not found' :
             affectedRows ? 'Docente update successfuly' : 'Update faild';
@@ -46,6 +49,7 @@ class DocentesService implements IDocentesService {
 
     delete = async (req: any): Promise<string> => {
         const result = await DocenteModel.delete(req.params.id);
+        
         if(!result){
             throw new HttpException(404, 'Docente not found', null);
         }

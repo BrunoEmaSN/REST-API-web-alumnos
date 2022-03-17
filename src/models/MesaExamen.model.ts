@@ -18,9 +18,8 @@ class MesaExamenModel{
         const {values}      = multipleColumnSet(params);
         const sql           = `CALL add_mesa_examen_maestro(?, ?)`;
         const result        = await query(sql, [...values]);
-        const affectedRows  = result ? result.affectedRows : 0;
 
-        return affectedRows;
+        return result[0][0];
     }
 
     createNovedad = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
@@ -32,17 +31,16 @@ class MesaExamenModel{
         return affectedRows;
     }
 
-    updateMaestro = async (id: any, params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-        
-        const {values}      = multipleColumnSet(params);
-        const sql           = `CALL edit_mesa_examen_maestro(?, ?, ?)`;
-        const result        = await query(sql, [id, ...values]);
+    updateMaestro = async (params: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+        const {values} = multipleColumnSet(params);
+        const sql      = `CALL edit_mesa_examen_maestro(?, ?, ?)`;
+        const result   = await query(sql, [...values]);
         
         return result;
     }
 
     deleteMaestro = async (id: any) => {
-        const sql = `CALL remove_mesa_examen_maestro(?)`;
+        const sql    = `CALL remove_mesa_examen_maestro(?)`;
         const result = await query(sql, [id]);
         const affectedRows = result ? result.affectedRows : 0;
 

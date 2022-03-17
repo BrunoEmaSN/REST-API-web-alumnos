@@ -23,6 +23,14 @@ class DocentesMateriasController {
         res.status(201).send(await this._docentesMateriasService.create(req));
     }
 
+    update = async (
+        req: { params: { id: any; }; body: ArrayLike<unknown> | { [s: string]: unknown; }; },
+        res: { send: (arg0: { message: string; info: any; }) => void; },
+        next: any
+    ) => {
+        res.send(await this._docentesMateriasService.update(req));
+    }
+
     delete = async (
         req: { params: { id: any; }; },
         res: { send: (arg0: string) => void; },

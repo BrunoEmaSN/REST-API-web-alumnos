@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import MesaExamenModel from "../models/MesaExamen.model";
 import IMesasExamenesService from "./interfaces/IMesasExamenes.service";
 import HttpException from "../utils/HttpException.utils";
+const { maestroFormatter, novedadFormatter } = require("../utils/formatter/mesaExamen");
 
 class MesasExamenesService implements IMesasExamenesService {
     getAll = async (): Promise<any> => {
@@ -10,7 +11,7 @@ class MesasExamenesService implements IMesasExamenesService {
             throw new HttpException(404, 'Mesas not found', null);
         }
 
-        return mesasList;
+        return mesasList[0];
     }
 
     getById = async (req: any): Promise<any> => {
@@ -18,33 +19,50 @@ class MesasExamenesService implements IMesasExamenesService {
         if(!mesa){
             throw new HttpException(404, 'Mesa not found', null);
         }
-        return mesa;
+        return mesa[0];
     }
 
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
+        const maestro = maestroFormatter( req.body.maestro );
+
         const resultN = new Array();
-        const resultM = await MesaExamenModel.createMaestro(req.body.maestro);
+        const resultM = await MesaExamenModel.createMaestro(maestro);
         if(!resultM){
             throw new HttpException(500, 'Something went wrong', null);
         }
-        req.body.novedad.map(async (novedad: ArrayLike<unknown> | { [s: string]: unknown; }) => {
-            resultN.push(await this.addNovedad(novedad));
+        req.body.novedad.map(async (n: ArrayLike<unknown> | { [s: string]: unknown; }) => {
+            const novedad = novedadFormatter(n);
+            resultN.push(await this.addNovedad({
+                maestroId: resultM.last_id,
+                ...novedad
+            }));
         });
 
-        return `Mesa was created \n${resultN}`;
+        return resultM;
     }
 
     update = async (req: any): Promise<any> => {
         this.checkValidation(req);
+        const maestro = maestroFormatter( req.body.maestro );
+
         const resultN = new Array();
-        const resultM = await MesaExamenModel.updateMaestro(req.params.id, req.body.maestro);
+        const resultM = await MesaExamenModel.updateMaestro({
+            id: parseInt(req.params.id),
+            ...maestro
+        });
+
         if(!resultM){
             throw new HttpException(404, 'Something went wrong', null);
         }
-        resultN.push(await this.removeNovedad(req.params.id));
-        req.body.novedad.map(async (novedad: ArrayLike<unknown> | { [s: string]: unknown; }) => {
-            resultN.push(await this.addNovedad(novedad));
+
+        resultN.push(await this.removeNovedad(parseInt(req.params.id)));
+        req.body.novedad.map(async (n: ArrayLike<unknown> | { [s: string]: unknown; }) => {
+            const novedad = novedadFormatter(n);
+            resultN.push(await this.addNovedad({
+                maestroId: parseInt(req.params.id),
+                ...novedad
+            }));
         });
 
         const {affectedRows, info} = resultM;
@@ -55,11 +73,7 @@ class MesasExamenesService implements IMesasExamenesService {
     }
 
     delete = async (req: any): Promise<string> => {
-        const result = await MesaExamenModel.deleteMaestro(parseInt(req.params.id));
-        if(!result){
-            throw new HttpException(404, 'Mesa not found', null);
-        }
-
+        await MesaExamenModel.deleteMaestro(parseInt(req.params.id));
         return 'Mesa has been deleted';
     }
 
@@ -73,11 +87,7 @@ class MesasExamenesService implements IMesasExamenesService {
     }
 
     removeNovedad = async (id: any): Promise<string> => {
-        let result = await MesaExamenModel.deleteNovedad(id);
-        if(!result){
-            throw new HttpException(500, 'Something went wrong', null);
-        }
-
+        await MesaExamenModel.deleteNovedad(id);
         return `Mesas remove`;
     }
 

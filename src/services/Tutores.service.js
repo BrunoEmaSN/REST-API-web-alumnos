@@ -16,6 +16,7 @@ const express_validator_1 = require("express-validator");
 const Pareja_model_1 = __importDefault(require("../models/Pareja.model"));
 const Tutor_model_1 = __importDefault(require("../models/Tutor.model"));
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
+const { tutorFormatter, parejaFormatter } = require("../utils/formatter/tutor");
 class TutoresService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -23,54 +24,58 @@ class TutoresService {
             if (!tutoresList.length) {
                 throw new HttpException_utils_1.default(404, 'Tutores not found', null);
             }
-            return tutoresList;
+            return tutoresList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const tutor = yield Tutor_model_1.default.find({ id: req.params.id });
             if (!tutor) {
                 throw new HttpException_utils_1.default(404, 'Tutor not found', null);
             }
-            return tutor;
+            return tutor[0][0];
         });
         this.getAllWithPareja = () => __awaiter(this, void 0, void 0, function* () {
             const tutoresWithPareja = yield Tutor_model_1.default.getAllWithPareja();
             if (!tutoresWithPareja.length) {
                 throw new HttpException_utils_1.default(404, 'Tutores not found', null);
             }
-            return tutoresWithPareja;
+            return tutoresWithPareja[0];
         });
         this.getByIdWithPareja = (req) => __awaiter(this, void 0, void 0, function* () {
             const tutorWithPareja = yield Tutor_model_1.default.findWithPareja({ id: req.params.id });
             if (!tutorWithPareja) {
                 throw new HttpException_utils_1.default(404, 'Tutor not found', null);
             }
-            return tutorWithPareja;
+            return tutorWithPareja[0][0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
+            const tutor = tutorFormatter(req.body);
+            const resultT = yield Tutor_model_1.default.create(tutor);
             const resultP = new Array();
-            const resultT = yield Tutor_model_1.default.create(req.body.tutor);
             if (!resultT) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
-            if (req.body.tutor.tiene_pareja) {
-                resultP.push(yield this.addPareja(req.body.pareja));
+            if (tutor.tienePareja) {
+                const pareja = parejaFormatter(req.body);
+                resultP.push(yield this.addPareja(pareja));
             }
             return `Tutor was created ${resultP}`;
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const resultT = yield Tutor_model_1.default.update(req.params.id, req.body.tutor);
+            const tutor = tutorFormatter(req.body);
+            const resultT = yield Tutor_model_1.default.update(tutor);
             const resultP = new Array();
             if (!resultT) {
                 throw new HttpException_utils_1.default(404, 'Something went wrong', null);
             }
-            if (req.body.tutor.tiene_pareja) {
+            if (tutor.tienePareja) {
+                const pareja = parejaFormatter(req.body);
                 resultP.push(yield this.removePareja(req.params.id));
-                resultP.push(yield this.addPareja(req.body.pareja));
+                resultP.push(yield this.addPareja(pareja));
             }
             else {
-                resultP.push(yield this.addPareja(req.params.id));
+                resultP.push(yield this.removePareja(req.params.id));
             }
             const { affectedRows, info } = resultT;
             const message = !affectedRows ? 'Tutor not found' :
@@ -96,7 +101,7 @@ class TutoresService {
             return 'Tutor has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

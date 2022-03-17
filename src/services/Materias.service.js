@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const Materia_model_1 = __importDefault(require("../models/Materia.model"));
 const HttpException_utils_1 = __importDefault(require("../utils/HttpException.utils"));
+const materiaFormatter = require("../utils/formatter/materia");
 class MateriasService {
     constructor() {
         this.getAll = () => __awaiter(this, void 0, void 0, function* () {
@@ -22,14 +23,14 @@ class MateriasService {
             if (!materiasList.length) {
                 throw new HttpException_utils_1.default(404, 'Materias not found', null);
             }
-            return materiasList;
+            return materiasList[0];
         });
         this.getById = (req) => __awaiter(this, void 0, void 0, function* () {
             const materia = yield Materia_model_1.default.find({ id: req.params.id });
             if (!materia) {
                 throw new HttpException_utils_1.default(404, 'Materia not found', null);
             }
-            return materia;
+            return materia[0][0];
         });
         this.create = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
@@ -37,11 +38,12 @@ class MateriasService {
             if (!result) {
                 throw new HttpException_utils_1.default(500, 'Something went wrong', null);
             }
-            return 'Materia was created';
+            return result;
         });
         this.update = (req) => __awaiter(this, void 0, void 0, function* () {
             this.checkValidation(req);
-            const result = yield Materia_model_1.default.update(req.params.id, req.body);
+            const materia = materiaFormatter(req.body);
+            const result = yield Materia_model_1.default.update(materia);
             if (!result) {
                 throw new HttpException_utils_1.default(404, 'Someting went wrong', null);
             }
@@ -58,7 +60,7 @@ class MateriasService {
             return 'Materia has been deleted';
         });
         this.checkValidation = (req) => __awaiter(this, void 0, void 0, function* () {
-            const errors = (0, express_validator_1.validationResult)(req);
+            const errors = express_validator_1.validationResult(req);
             if (!errors.isEmpty()) {
                 throw new HttpException_utils_1.default(400, 'Validation faild', errors);
             }

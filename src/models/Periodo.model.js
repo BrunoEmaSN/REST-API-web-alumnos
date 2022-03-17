@@ -15,11 +15,11 @@ class PeriodoModel {
     constructor() {
         this.getAll = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL get_all_periodos(?)`;
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             return yield query(sql, [...values]);
         });
         this.create = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_periodo(?, ?, ?, ?)`;
             const result = query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;

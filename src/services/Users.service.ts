@@ -86,9 +86,12 @@ class UsersService implements IUsersService {
         }
 
         const secretKey = process.env.SECRET_JWT || '';
-        const token     = jwt.sign({user_id: user.id.toString()}, secretKey, {
-            expiresIn: '24h'
-        });
+        const token     = jwt.sign(
+            { user_id: user.id.toString() },
+            secretKey, {
+                expiresIn: '24h'
+            }
+        );
 
         const {password, ...userWithoutPassword} = user;
 

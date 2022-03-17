@@ -21,6 +21,9 @@ class DocentesMateriasController {
         this.create = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             res.status(201).send(yield this._docentesMateriasService.create(req));
         });
+        this.update = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            res.send(yield this._docentesMateriasService.update(req));
+        });
         this.delete = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             res.send(yield this._docentesMateriasService.delete(req));
         });

@@ -19,27 +19,26 @@ class MesaExamenModel {
         });
         this.find = (params) => __awaiter(this, void 0, void 0, function* () {
             const sql = `CALL find_mesa_examen_novedad(?)`;
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             return yield query(sql, [...values]);
         });
         this.createMaestro = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_mesa_examen_maestro(?, ?)`;
             const result = yield query(sql, [...values]);
-            const affectedRows = result ? result.affectedRows : 0;
-            return affectedRows;
+            return result[0][0];
         });
         this.createNovedad = (params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL add_mesa_examen_novedad(?, ?, ?, ?, ?, ?, ?)`;
             const result = yield query(sql, [...values]);
             const affectedRows = result ? result.affectedRows : 0;
             return affectedRows;
         });
-        this.updateMaestro = (id, params) => __awaiter(this, void 0, void 0, function* () {
-            const { values } = (0, common_utils_1.multipleColumnSet)(params);
+        this.updateMaestro = (params) => __awaiter(this, void 0, void 0, function* () {
+            const { values } = common_utils_1.multipleColumnSet(params);
             const sql = `CALL edit_mesa_examen_maestro(?, ?, ?)`;
-            const result = yield query(sql, [id, ...values]);
+            const result = yield query(sql, [...values]);
             return result;
         });
         this.deleteMaestro = (id) => __awaiter(this, void 0, void 0, function* () {

@@ -2,23 +2,22 @@ import { validationResult } from "express-validator";
 import PeriodoModel from "../models/Periodo.model";
 import IPeriodosService from "./interfaces/IPeriodos.service";
 import HttpException from "../utils/HttpException.utils";
+const periodoFormatter = require("../utils/formatter/periodo");
 
 class PeriodosService implements IPeriodosService{
     getAll = async (req: any): Promise<any> => {
-        const periodosList = await PeriodoModel.getAll(req.body);
+        const periodosList = await PeriodoModel.getAll({tipo: req.params.tipo});
         if(!periodosList.length){
             throw new HttpException(404, 'Periodos not found', null);
         }
 
-        return periodosList;
+        return periodosList[0];
     }
 
     create = async (req: any): Promise<string> => {
         this.checkValidation(req);
-        const result = await PeriodoModel.create(req.body);
-        if(!result){
-            throw new HttpException(500, 'Something went wrong', null);
-        }
+        const periodo = periodoFormatter( req.body );
+        await PeriodoModel.create(periodo);
 
         return 'Periodo was created';
     }
